@@ -9,21 +9,34 @@ import java.sql.*;
  */
 public class ConsultaStatement {
 
+	static ResultSet res=null;//atributo para guardar el resulset
+	static ResultSetMetaData infoTabla=null;//atributo para guardar la informacino de la tabla
+	
 	static {
 		Conexion.setURL("jdbc:mysql://localhost:3306/Libros?user=usuario1&password=usuario1");
 	}
+	
 
 	public static void main(String[] args) {
 
 		String consulta = "SELECT * from libros WHERE titulo LIKE '%java%';";
-		//obtiene un objeto resulset
-		ResultSet res = lanzarSelect(consulta);
-		//muestra el contenido del resulset obtenido
+		
+		/* 1 Lanza consulta, devuele un resulset, obtiene y guarda nformacion del resultset*/
+		res = lanzarSelect(consulta);
+		
+		/*2 muestra el contenido del resulset obtenido */
 		mostrarSelect(res);
-		//cierra conexion con la db
+		
+		/*3 obtiene nuevo Id de la tabla libros*/
+		int nuevoId=getNuevoID("libros", "codigoLibro");
+		
+		System.out.println(nuevoId);
+		
+		/*cierra conexion con la db*/
 		Conexion.desconecta();
 	}
 
+	/*1 Lanza consulta, devuele un resulset, obtiene y guarda nformacion del resultset  */
 	private static ResultSet lanzarSelect(String select) {
 
 		ResultSet res0=null;
@@ -37,9 +50,17 @@ public class ConsultaStatement {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		try {
+			infoTabla=res.getMetaData();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return res0;
 	}
 	
+	/*2 muestra el contenido del resulset obtenido */
 	private static void mostrarSelect(ResultSet res){
 		
 		String codigolibro;
@@ -69,5 +90,19 @@ public class ConsultaStatement {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	private static int getNuevoID(String tabla, String ID){
+		Integer id=null;
+		try {
+			res.last();
+			id=res.getInt(ID);
+			
+			System.out.println("\nEl Elemento es ->"+id);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return id+1;
 	}
 }
