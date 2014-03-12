@@ -16,11 +16,11 @@ public class ConsultaStatement {
 	public static void main(String[] args) {
 
 		String consulta = "SELECT * from libros WHERE titulo LIKE '%java%';";
-		
+		//obtiene un objeto resulset
 		ResultSet res = lanzarSelect(consulta);
-		
+		//muestra el contenido del resulset obtenido
 		mostrarSelect(res);
-
+		//cierra conexion con la db
 		Conexion.desconecta();
 	}
 
